@@ -44,8 +44,8 @@ def is_track_eol(track_value: dict[str, str], track_name: str | None = None) -> 
     eol_date = datetime.strptime(eol_str, EOL_TRACK_FMT).replace(tzinfo=timezone.utc)
     is_eol = eol_date < datetime.now(timezone.utc)
 
-    if is_eol and track_name is not None:
-        logger.warning(f'Removing EOL track "{track_name}", EOL: {eol_date}')
+    if is_eol:
+        logger.warning(f'Removing EOL track "{track_name or 'UNKNOWN TRACK'}", EOL: {eol_date}')
 
     return is_eol
 
