@@ -20,7 +20,7 @@ EOL_DISTRO_FMT = "%Y-%m-%d"
 
 VERSIONS = [
     version.strip().split(',')[0]
-    for version in Path(UBUNTU_DISTRO_INFO).open(encoding='UTF-8').readlines()[1::]
+    for version in Path(UBUNTU_DISTRO_INFO).open(encoding='UTF-8').readlines()[1:]
 ]
 
 logger = get_logger()
