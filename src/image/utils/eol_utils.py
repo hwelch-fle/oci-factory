@@ -83,7 +83,7 @@ def get_base_eol(base: str, eol_target: Literal['eol', 'eol-server', 'eol-esm'] 
     eol_date = datetime.strptime(distro[eol_target], EOL_DISTRO_FMT).replace(tzinfo=timezone.utc)
     return eol_date
 
-def generate_base_eol_exceed_warning(tracks_eol_exceed_base_eol: list[dict[str, Any]]):
+def generate_base_eol_exceed_warning(tracks_eol_exceed_base_eol: list[dict[str, Any]]) -> tuple[str, str]:
     """Generates markdown table for the tracks that exceed the base image EOL date.
 
     Args:
@@ -92,15 +92,22 @@ def generate_base_eol_exceed_warning(tracks_eol_exceed_base_eol: list[dict[str, 
     Returns:
         tuple: A tuple containing the title and text for the warning.
     """
-    title = "Found tracks with EOL date exceeding base image's EOL date\n"
-    text = "Following tracks have an EOL date that exceeds the base image's EOL date:\n"
-    table = "| Track | Base | Track EOL Date | Base EOL Date |\n"
-    table += "|-------|------|----------------|---------------|\n"
-    for build in tracks_eol_exceed_base_eol:
-        table += f"| {build['track']} | {build['base']} | {build['track_eol']} | {build['base_eol']} |\n"
-    text += table
-    text += "\nPlease check the EOL date of the base image and the track.\n"
-    return title, text
+    
+    # Set up lazy record generator
+    table_records = (
+        f"| {build['track']} | {build['base']} | {build['track_eol']} | {build['base_eol']} |" 
+        for build in tracks_eol_exceed_base_eol
+    )
+
+    title = "Found tracks with EOL date exceeding base image's EOL date"
+
+    # Build body text using implicit string joining
+    body = ("Following tracks have an EOL date that exceeds the base image's EOL date:\n"
+            "| Track | Base | Track EOL Date | Base EOL Date |\n"
+            "|-------|------|----------------|---------------|\n"
+            f"{'\n'.join(table_records)}" # Insert records
+            "\nPlease check the EOL date of the base image and the track.\n")
+    return title, body
 
 
 def track_eol_exceeds_base_eol(track: str, track_eol: str, base: str | None = None) -> Optional[dict[str, Any]]:
