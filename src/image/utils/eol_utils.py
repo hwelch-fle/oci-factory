@@ -114,7 +114,7 @@ def generate_base_eol_exceed_warning(tracks_eol_exceed_base_eol: list[dict[str, 
     return title, body
 
 
-def track_eol_exceeds_base_eol(track: str, track_eol: str, base: str | None = None) -> Optional[dict[str, Any]]:
+def track_eol_exceeds_base_eol(track: str, track_eol: str, base: str | None = None) -> dict[str, Any] | None:
     """Check if the track EOL date exceeds the base image EOL date.
 
     Args:
@@ -123,8 +123,9 @@ def track_eol_exceeds_base_eol(track: str, track_eol: str, base: str | None = No
         base (str | None): The base image name, e.g., "ubuntu:22.04". If None, the base will be inferred from the track name.
 
     Returns:
-        Optional[dict[str, Any]]: Dictionary containing the track name, base image, EOL date, and base image EOL date if the track EOL exceeds the base image EOL date.
-        None: If the track EOL date does not exceed the base image EOL date.
+        (dict[str, Any] | None): Dictionary containing the track name, base image, EOL date, and base image EOL date if the track EOL exceeds the base image EOL date.
+
+        (None): If the track EOL date does not exceed the base image EOL date.
     """
     if not base:
         _, base_version_id = track.split("-")
