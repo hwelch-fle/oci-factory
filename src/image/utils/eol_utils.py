@@ -13,13 +13,17 @@ from typing import (
 from ...shared.logs import get_logger
 
 UBUNTU_DISTRO_INFO = "/usr/share/distro-info/ubuntu.csv"
-VERSION_ID_REGEX = re.compile(r"^(\d{1,2}\.\d{1,2})$")
 
 # Track EOL strfmt
 EOL_TRACK_FMT = "%Y-%m-%dT%H:%M:%SZ"
 
 # Distro Info strfmt
 EOL_DISTRO_FMT = "%Y-%m-%d"
+
+VERSIONS = [
+    version.strip().split(',')[0]
+    for version in Path(UBUNTU_DISTRO_INFO).open(encoding='UTF-8').readlines()[1::]
+]
 
 logger = get_logger()
 
@@ -124,7 +128,7 @@ def track_eol_exceeds_base_eol(track: str, track_eol: str, base: str | None = No
     """
     if not base:
         _, base_version_id = track.split("-")
-        if not VERSION_ID_REGEX.match(base_version_id):
+        if not any(version.startswith(base_version_id) for version in VERSIONS):
             logger.warning(f"Track-base-EOL validation skipped for aliased track {track}")
             return None
     else:
