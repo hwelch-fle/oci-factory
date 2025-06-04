@@ -51,11 +51,12 @@ def is_track_eol(track_value: dict[str, str], track_name: str | None = None) -> 
     return is_eol
 
 
-def get_base_eol(base: str) -> datetime:
+def get_base_eol(base: str, eol_target: Literal['eol', 'eol-server', 'eol-esm'] = 'eol') -> datetime:
     """Find the EOL of the Ubuntu base image by reading /usr/share/distro-info/ubuntu.csv.
 
     Args:
         base (str): The version ID of the base image, e.g., "22.04".
+        eol_target (Literal['eol', 'eol-server', 'eol-esm']): The EOL target to get (default 'eol')
     Returns:
         datetime: The end-of-life date of the base image.
     Raises:
