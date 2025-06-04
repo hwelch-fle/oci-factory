@@ -34,10 +34,15 @@ def is_track_eol(track_value: dict[str, str], track_name: str | None = None) -> 
     Returns:
         bool: True if the track is EOL, False otherwise.
     """
-    eol_date = datetime.strptime(
-        track_value["end-of-life"],
-        "%Y-%m-%dT%H:%M:%SZ",
-    ).replace(tzinfo=timezone.utc)
+    eol_str = track_value.get('end-of-life')
+
+    # Handle situations where EOL is not populated, and assumes that it is EOL
+    # This might never happen, but it's a simple check
+    if eol_str is None:
+        logger.error(f"No EOL provided for {track_name or 'UNNAMED TRACK'}! Assuming EOL is now")
+        return True
+    
+    eol_date = datetime.strptime(eol_str, EOL_TRACK_FMT).replace(tzinfo=timezone.utc)
     is_eol = eol_date < datetime.now(timezone.utc)
 
     if is_eol and track_name is not None:
