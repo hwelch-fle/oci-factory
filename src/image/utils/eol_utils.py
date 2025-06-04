@@ -129,8 +129,6 @@ def track_eol_exceeds_base_eol(track: str, track_eol: str, base: str | None = No
     """
     _, base_version_id = base.split(':') if base is not None else track.split("-")
 
-    # Should this raise an Exception? Currently it has the same behavior as a valid EOL
-
     # NOTE: str.startswith() is used to avoid rstripping 'LTS' from 'LTS' releases
     if not any(version.startswith(base_version_id) for version in VERSIONS):
         logger.warning(f"Track-base-EOL validation skipped for aliased track {track}")
