@@ -127,14 +127,12 @@ def track_eol_exceeds_base_eol(track: str, track_eol: str, base: str | None = No
 
         (None): If the track EOL date does not exceed the base image EOL date.
     """
-    if not base:
-        _, base_version_id = track.split("-")
-        if not any(version.startswith(base_version_id) for version in VERSIONS):
-            logger.warning(f"Track-base-EOL validation skipped for aliased track {track}")
-            return None
-    else:
-        base_version_id = base.split(":")[-1]
+    _, base_version_id = base.split(':') if base is not None else track.split("-")
 
+    if not any(version.startswith(base_version_id) for version in VERSIONS):
+        logger.warning(f"Track-base-EOL validation skipped for aliased track {track}")
+        return None
+    
     base_eol = get_base_eol(base_version_id)
     eol_date = datetime.strptime(track_eol,EOL_TRACK_FMT).replace(tzinfo=timezone.utc)
 
