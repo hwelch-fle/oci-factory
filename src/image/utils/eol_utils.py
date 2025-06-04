@@ -25,11 +25,11 @@ EOL_DISTRO_FMT = "%Y-%m-%d"
 logger = get_logger()
 
 
-def is_track_eol(track_value: str, track_name: str | None = None) -> bool:
+def is_track_eol(track_value: dict[str, str], track_name: str | None = None) -> bool:
     """Test if track is EOL, or still valid. Log warning if track_name is provided.
 
     Args:
-        track_value (str): The value of the track, a dictionary containing 'end-of-life'.
+        track_value (dict[str, str]): The value of the track, a dictionary containing 'end-of-life' and a iso timestamp.
         track_name (str | None): The name of the track. Defaults to None.
     Returns:
         bool: True if the track is EOL, False otherwise.
