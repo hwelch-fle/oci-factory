@@ -136,16 +136,14 @@ def track_eol_exceeds_base_eol(track: str, track_eol: str, base: str | None = No
     base_eol = get_base_eol(base_version_id)
     eol_date = datetime.strptime(track_eol,EOL_TRACK_FMT).replace(tzinfo=timezone.utc)
 
-    if eol_date > base_eol:
-        logger.warning(
-            f"Track {track} has an EOL date {eol_date} that exceeds the base image EOL date {base_eol}"
-        )
+    # Early return for happy path
+    if eol_date < base_eol:
+        return None
 
-        return {
-            "track": track,
-            "base": f"ubuntu:{base_version_id}",
-            "track_eol": eol_date.strftime(EOL_DISTRO_FMT),
-            "base_eol": base_eol.strftime(EOL_DISTRO_FMT),
-        }
-
-    return None
+    logger.warning(f"Track {track} has an EOL date {eol_date} that exceeds the base image EOL date {base_eol}")
+    return {
+        "track": track,
+        "base": f"ubuntu:{base_version_id}",
+        "track_eol": eol_date.strftime(EOL_DISTRO_FMT),
+        "base_eol": base_eol.strftime(EOL_DISTRO_FMT),
+    }
