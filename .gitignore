@@ -8,3 +8,5 @@ tools/workflow-engine/charms/temporal-worker/dist
 *.tfvars*
 .vscode
 venv
+# Add Hidden venv
+.venv
