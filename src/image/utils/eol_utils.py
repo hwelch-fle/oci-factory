@@ -1,4 +1,3 @@
-import re
 from datetime import (
     datetime, 
     timezone,
@@ -6,7 +5,6 @@ from datetime import (
 from pathlib import Path
 from typing import (
     Any, 
-    Optional, 
     Literal,
 )
 
