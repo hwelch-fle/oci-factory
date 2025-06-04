@@ -125,10 +125,7 @@ def track_eol_exceeds_base_eol(track: str, track_eol: str, base: str | None = No
         base_version_id = base.split(":")[-1]
 
     base_eol = get_base_eol(base_version_id)
-    eol_date = datetime.strptime(
-        track_eol,
-        "%Y-%m-%dT%H:%M:%SZ",
-    ).replace(tzinfo=timezone.utc)
+    eol_date = datetime.strptime(track_eol,EOL_TRACK_FMT).replace(tzinfo=timezone.utc)
 
     if eol_date > base_eol:
         logger.warning(
@@ -138,8 +135,8 @@ def track_eol_exceeds_base_eol(track: str, track_eol: str, base: str | None = No
         return {
             "track": track,
             "base": f"ubuntu:{base_version_id}",
-            "track_eol": eol_date.strftime("%Y-%m-%d"),
-            "base_eol": base_eol.strftime("%Y-%m-%d"),
+            "track_eol": eol_date.strftime(EOL_DISTRO_FMT),
+            "base_eol": base_eol.strftime(EOL_DISTRO_FMT),
         }
 
     return None
