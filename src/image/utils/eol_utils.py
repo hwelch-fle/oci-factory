@@ -60,20 +60,29 @@ def get_base_eol(base: str, eol_target: Literal['eol', 'eol-server', 'eol-esm'] 
     Returns:
         datetime: The end-of-life date of the base image.
     Raises:
-        ValueError: If the base image is not found in the CSV file.
+        ValueError: If the base image is not found in the CSV file. Or the slected EOL path is not populated for base image
     """
-    ubuntu_distros = Path(UBUNTU_DISTRO_INFO).read_text(encoding="UTF-8")
-    reader = csv.DictReader(ubuntu_distros.splitlines(), delimiter=",")
-    for row in reader:
-        if row["version"].rstrip("LTS").strip() == base:
-            eol_date = datetime.strptime(
-                row["eol"],
-                "%Y-%m-%d",
-            ).replace(tzinfo=timezone.utc)
-            return eol_date
+    distro_info = Path(UBUNTU_DISTRO_INFO).open(encoding="UTF-8")
+    headers = next(distro_info).strip().split(',') # get headers
 
-    raise ValueError(f"Base image {base} not found in {UBUNTU_DISTRO_INFO}")
+    # Iterate the rows and zip the headers with the valid distros
+    valid_distro: list[dict[str,str]] = [
+        dict(zip(headers, row.strip().split(',')))
+        for row in distro_info
+        if row.startswith(base) # Check that the row starts with base before splitting
+    ]
 
+    # If no valid distros are found, raise ValueError and log error
+    if not valid_distro:
+        raise ValueError(f"Base image {base} not found in {UBUNTU_DISTRO_INFO}")
+    
+    distro = valid_distro.pop(0)
+
+    if eol_target not in distro:
+        raise ValueError(f"Base image {base} does not have {eol_target}")
+
+    eol_date = datetime.strptime(distro[eol_target], EOL_DISTRO_FMT).replace(tzinfo=timezone.utc)
+    return eol_date
 
 def generate_base_eol_exceed_warning(tracks_eol_exceed_base_eol: list[dict[str, Any]]):
     """Generates markdown table for the tracks that exceed the base image EOL date.
