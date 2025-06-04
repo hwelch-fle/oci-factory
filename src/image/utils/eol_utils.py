@@ -45,9 +45,10 @@ def is_track_eol(track_value: dict[str, str], track_name: str | None = None) -> 
     
     eol_date = datetime.strptime(eol_str, EOL_TRACK_FMT).replace(tzinfo=timezone.utc)
     is_eol = eol_date < datetime.now(timezone.utc)
-
+    
+    unknown = 'UNKNOWN TRACK'
     if is_eol:
-        logger.warning(f'Removing EOL track "{track_name or 'UNKNOWN TRACK'}", EOL: {eol_date}')
+        logger.warning(f'Removing EOL track "{track_name or unknown}", EOL: {eol_date}')
 
     return is_eol
 
@@ -103,11 +104,12 @@ def generate_base_eol_exceed_warning(tracks_eol_exceed_base_eol: list[dict[str, 
 
     title = "Found tracks with EOL date exceeding base image's EOL date"
 
+    newline = '\n'
     # Build body text using implicit string joining
     body = ("Following tracks have an EOL date that exceeds the base image's EOL date:\n"
             "| Track | Base | Track EOL Date | Base EOL Date |\n"
             "|-------|------|----------------|---------------|\n"
-            f"{'\n'.join(table_records)}" # Insert records
+            f"{newline.join(table_records)}" # Insert records
             "\nPlease check the EOL date of the base image and the track.\n")
     return title, body
 
