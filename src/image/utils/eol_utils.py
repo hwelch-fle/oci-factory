@@ -9,6 +9,12 @@ from ...shared.logs import get_logger
 UBUNTU_DISTRO_INFO = "/usr/share/distro-info/ubuntu.csv"
 VERSION_ID_REGEX = re.compile(r"^(\d{1,2}\.\d{1,2})$")
 
+# Track EOL strfmt
+EOL_TRACK_FMT = "%Y-%m-%dT%H:%M:%SZ"
+
+# Distro Info strfmt
+EOL_DISTRO_FMT = "%Y-%m-%d"
+
 logger = get_logger()
 
 
